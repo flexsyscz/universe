@@ -1,0 +1,38 @@
+{
+	"name": "flexsyscz/universe",
+	"description": "Universe of tools to everyday use with PHP (Nette) project.",
+	"keywords": ["flexsyscz", "universe"],
+	"homepage": "https://www.flexsys.cz",
+	"license": ["BSD-3-Clause", "GPL-2.0-only", "GPL-3.0-only"],
+	"authors": [
+		{
+			"name": "Václav Lukeš",
+			"homepage": "https://www.vaclavlukes.cz"
+		}
+	],
+	"require": {
+		"php": ">=7.2",
+		"nette/nette": "^3.0",
+		"nextras/orm": "^4.0",
+		"marc-mabe/php-enum": "^4.4",
+		"ext-iconv": "*"
+	},
+	"require-dev": {
+		"nette/tester": "~2.0",
+		"tracy/tracy": "^2.3",
+		"phpstan/phpstan": "^0.12"
+	},
+	"autoload": {
+		"classmap": ["src/"]
+	},
+	"minimum-stability": "stable",
+	"scripts": {
+		"phpstan": "phpstan analyse --level 5 --configuration tests/phpstan.neon src",
+		"tester": "tester tests -s"
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "0.1-dev"
+		}
+	}
+}

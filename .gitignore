@@ -1,0 +1,6 @@
+/.idea
+/composer.lock
+/vendor
+/tests/log
+/tests/tmp
+/tests/Model/config/local.neon

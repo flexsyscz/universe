@@ -1,0 +1,11 @@
+messages:
+	error:
+		userNotFound: "User not found."
+		accessDenied: "Access denied."
+
+content:
+	homepage:
+		header: "Hello world!"
+		description:
+			part1: "Lorem ipsum 1"
+			part2: "et dolores el simet 2"

@@ -1,0 +1,11 @@
+messages:
+	error:
+		userNotFound: "Uživatel nenalezen."
+		accessDenied: "Přístup byl odepřen."
+
+content:
+	homepage:
+		header: "Dobrý den!"
+		description:
+			part1: "Lorem ipsum 1"
+			part2: "et dolores el simet 2"

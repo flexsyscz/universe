@@ -1,0 +1,16 @@
+extensions:
+	dbal: Nextras\Dbal\Bridges\NetteDI\DbalExtension
+	orm: Nextras\Orm\Bridges\NetteDI\OrmExtension
+
+dbal:
+	driver: %db.driver%
+	host: %db.host%
+	port: %db.port%
+	database: %db.database%
+	username: %db.username%
+	password: %db.password%
+	connectionTz: UTC
+	autowired: %autowired%
+
+orm:
+	model: Tests\Model\Orm
