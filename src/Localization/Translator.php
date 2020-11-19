@@ -15,6 +15,9 @@ use Tracy\ILogger;
 class Translator implements ITranslator
 {
 	/** @var string */
+	private const PLACEHOLDER = '?';
+
+	/** @var string */
 	private const DELIMITER = '.';
 
 	/** @var string */
@@ -79,7 +82,8 @@ class Translator implements ITranslator
 			return $message;
 		}
 
-		$translation = $this->lookup($this->dictionaries[$this->language], $path);
+		$count = isset($parameters[0]) ? $parameters[0] : null;
+		$translation = $this->lookup($this->dictionaries[$this->language], $path, $count);
 		if(!$translation) {
 			$this->logger->log(sprintf('Message %s not found in dictionary %s.', $message, $this->language), ILogger::ERROR);
 			return $message;
@@ -92,14 +96,23 @@ class Translator implements ITranslator
 	/**
 	 * @param array $node
 	 * @param array $path
+	 * @param mixed|null $count
 	 * @return string|null
 	 */
-	private function lookup(array $node, array $path): ?string
+	private function lookup(array $node, array $path, $count = null): ?string
 	{
+		if(empty($path)) {
+			return isset($node[$count])
+				? $node[$count]
+				: (isset($node[self::PLACEHOLDER])
+					? sprintf($node[self::PLACEHOLDER], $count)
+					: null);
+		}
+
 		$index = array_shift($path);
 		if(isset($node[$index])) {
 			if(is_array($node[$index])) {
-				return $this->lookup($node[$index], $path);
+				return $this->lookup($node[$index], $path, $count);
 			} else {
 				return strval($node[$index]);
 			}

@@ -31,8 +31,7 @@ before(function () {
 
 
 test('', function () {
-	$logDir = getLogDir() . '/translator';
-	$logger = new \Tracy\Logger($logDir);
+	$logger = new \Tracy\Logger(getMyLogDir());
 	$translator = new Universe\Localization\Translator(LanguageType::CZECH, [
 		LanguageType::CZECH => __DIR__ . '/../resources/cs_CZ.neon',
 		LanguageType::ENGLISH => __DIR__ . '/../resources/en_US.neon',

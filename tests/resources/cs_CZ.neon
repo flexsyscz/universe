@@ -1,3 +1,33 @@
+flexsyscz:
+	DateTimeProvider:
+		months:
+			january: leden
+			february: únor
+			march: březen
+			april: duben
+			may: květen
+			june: červen
+			july: červenec
+			august: srpen
+			september: září
+			october: říjen
+			november: listopad
+			december: prosinec
+		days:
+			monday: pondělí
+			tuesday: úterý
+			wednesday: středa
+			thursday: čtvrtek
+			friday: pátek
+			saturday: sobota
+			sunday: neděle
+		ago:
+			justNow: právě teď
+			second:
+				1: před chvílí
+				2: před chvílí
+				?: před %s vteřinami
+
 messages:
 	error:
 		userNotFound: "Uživatel nenalezen."
