@@ -44,6 +44,9 @@ test('', function () {
 	Assert::equal('před chvílí', $dateTimeProvider->ago($now->modify('-1 seconds')));
 	Assert::equal('před chvílí', $dateTimeProvider->ago($now->modify('-4 seconds')));
 	Assert::equal('před 5 vteřinami', $dateTimeProvider->ago($now->modify('-5 seconds')));
+	Assert::equal('před 6 dny', $dateTimeProvider->ago($now->modify('-6 days')));
+	Assert::equal('před týdnem', $dateTimeProvider->ago($now->modify('-10 days')));
+	Assert::equal('před 2 týdny', $dateTimeProvider->ago($now->modify('-21 days')));
 
 	$translator->setLanguage(LanguageType::ENGLISH);
 	Assert::equal('few seconds ago', $dateTimeProvider->ago($now->modify('-1 seconds')));

@@ -27,6 +27,12 @@ flexsyscz:
 				1: před chvílí
 				2: před chvílí
 				?: před %s vteřinami
+			day:
+				1: včera
+				?: před %s dny
+			week:
+				1: před týdnem
+				?: před %s týdny
 
 messages:
 	error:

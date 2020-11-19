@@ -54,6 +54,7 @@ class DateTimeProvider
 		$params = [
 			'y' => 'year',
 			'm' => 'month',
+			'w' => 'week',
 			'd' => 'day',
 			'h' => 'hour',
 			'i' => 'minute',
@@ -61,9 +62,17 @@ class DateTimeProvider
 		];
 
 		$diff = self::now()->diff($ago);
+		$values = [];
 		foreach($params as $k => $n) {
-			if (isset($diff->$k) && $diff->$k > 0) {
-				$count = $diff->$k >= 5 ? $diff->$k : ($diff->$k === 1 ? 1 : 2);
+			$values[$n] = isset($diff->$k) ? $diff->$k : 0;
+			if($k === 'w') {
+				$values[$n] = intval(floor($diff->d / 7));
+			}
+		}
+
+		foreach($values as $n => $v) {
+			if ($v > 0) {
+				$count = $v >= 5 ? $v : ($v === 1 ? 1 : 2);
 				return $this->translator->translate(sprintf('flexsyscz.DateTimeProvider.ago.%s', $n), $count);
 			}
 		}
