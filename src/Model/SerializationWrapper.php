@@ -23,7 +23,7 @@ class SerializationWrapper extends ImmutableValuePropertyWrapper
 
 	/**
 	 * @param mixed $value
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public function convertFromRawValue($value)
 	{

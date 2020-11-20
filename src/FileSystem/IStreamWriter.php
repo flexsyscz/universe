@@ -16,7 +16,7 @@ interface IStreamWriter
 	public function open(string $filePath);
 
 	/**
-	 * @param array|string $data
+	 * @param array<string>|string $data
 	 * @return IStreamWriter
 	 */
 	public function write($data);

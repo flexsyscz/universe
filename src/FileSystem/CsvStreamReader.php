@@ -24,11 +24,12 @@ class CsvStreamReader implements IStreamReader
 	 */
 	public function open(string $filePath): self
 	{
-		$this->file = fopen($filePath, 'r');
-		if(!$this->file) {
+		$file = fopen($filePath, 'r');
+		if(!$file) {
 			throw new InvalidStateException(sprintf('Unable to open a stream to the file %s', $filePath));
 		}
 
+		$this->file = $file;
 		if(!flock($this->file, LOCK_EX)) {
 			throw new InvalidStateException(sprintf('Unable to set a lock on the file %s', $filePath));
 		}
@@ -42,7 +43,7 @@ class CsvStreamReader implements IStreamReader
 	 * @param string $delimiter
 	 * @param string $enclosure
 	 * @param string $escapeChar
-	 * @return array|false
+	 * @return array<mixed>|false
 	 */
 	public function read(int $length = 0, string $delimiter = self::DELIMITER, string $enclosure = "'", string $escapeChar = "\\")
 	{

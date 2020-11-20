@@ -16,7 +16,7 @@ use Nette\Utils\FileSystem;
  */
 class FileManager
 {
-	/** @var array */
+	/** @var ArrayHash<string> */
 	private $partitions;
 
 	/** @var string|null */
@@ -25,7 +25,7 @@ class FileManager
 
 	/**
 	 * FileManager constructor.
-	 * @param array $partitions
+	 * @param array<string> $partitions
 	 */
 	public function __construct(array $partitions)
 	{
@@ -67,10 +67,10 @@ class FileManager
 
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @return string
 	 */
-	public function getPartitionPath($name): string
+	public function getPartitionPath(string $name): string
 	{
 		if(!$this->partitions->offsetExists($name)) {
 			throw new PartitionNotFoundException(sprintf('Partition %s not found.', $name));
@@ -83,7 +83,7 @@ class FileManager
 	/**
 	 * @param string $name
 	 * @param string|null $filePath
-	 * @return array
+	 * @return array<string>
 	 */
 	public function scan(string $name, string $filePath = null): array
 	{
@@ -116,10 +116,10 @@ class FileManager
 
 
 	/**
-	 * @param $name
+	 * @param string $name
 	 * @return $this
 	 */
-	public function use($name): self
+	public function use(string $name): self
 	{
 		if(!$this->partitions->offsetExists($name)) {
 			throw new PartitionNotFoundException(sprintf('Partition %s not found.', $name));
@@ -138,7 +138,12 @@ class FileManager
 	 */
 	public function absolutePath(string $file, string $partition = null): string
 	{
-		return FileSystem::joinPaths($partition ? $this->getPartitionPath($partition) : $this->workingDirectory, $file);
+		$path = $partition ? $this->getPartitionPath($partition) : $this->workingDirectory;
+		if(!$path) {
+			throw new InvalidArgumentException('Path not found.');
+		}
+
+		return FileSystem::joinPaths($path, $file);
 	}
 
 

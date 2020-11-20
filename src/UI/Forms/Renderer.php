@@ -18,14 +18,16 @@ class Renderer
 	public static function makeBootstrap5(Form $form): void
 	{
 		$renderer = $form->getRenderer();
-		$renderer->wrappers['controls']['container'] = null;
-		$renderer->wrappers['pair']['container'] = 'div class="row mb-3"';
-		$renderer->wrappers['pair']['.error'] = 'has-danger';
-		$renderer->wrappers['control']['container'] = 'div class=col-sm-9';
-		$renderer->wrappers['label']['container'] = 'div class="col-sm-3 col-form-label"';
-		$renderer->wrappers['control']['description'] = 'span class=form-text';
-		$renderer->wrappers['control']['errorcontainer'] = 'span class=form-control-feedback';
-		$renderer->wrappers['control']['.error'] = 'is-invalid';
+		if(isset($renderer->wrappers)) {
+			$renderer->wrappers['controls']['container'] = null;
+			$renderer->wrappers['pair']['container'] = 'div class="row mb-3"';
+			$renderer->wrappers['pair']['.error'] = 'has-danger';
+			$renderer->wrappers['control']['container'] = 'div class=col-sm-9';
+			$renderer->wrappers['label']['container'] = 'div class="col-sm-3 col-form-label"';
+			$renderer->wrappers['control']['description'] = 'span class=form-text';
+			$renderer->wrappers['control']['errorcontainer'] = 'span class=form-control-feedback';
+			$renderer->wrappers['control']['.error'] = 'is-invalid';
+		}
 
 		foreach ($form->getControls() as $control) {
 			$type = $control->getOption('type');

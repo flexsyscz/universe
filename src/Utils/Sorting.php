@@ -10,9 +10,9 @@ namespace Flexsyscz\Universe\Utils;
 class Sorting
 {
 	/**
-	 * @param array $arr
+	 * @param array<mixed> $arr
 	 * @param bool $numeric
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public static function asort(array $arr, bool $numeric = false): array
 	{
@@ -25,9 +25,9 @@ class Sorting
 
 
 	/**
-	 * @param array $arr
+	 * @param array<mixed> $arr
 	 * @param bool $numeric
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public static function ksort(array $arr, bool $numeric = false): array
 	{
@@ -40,9 +40,9 @@ class Sorting
 
 
 	/**
-	 * @param array $arr
+	 * @param array<mixed> $arr
 	 * @param bool $numeric
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public static function arsort(array $arr, bool $numeric = false): array
 	{
@@ -51,9 +51,9 @@ class Sorting
 
 
 	/**
-	 * @param array $arr
+	 * @param array<mixed> $arr
 	 * @param bool $numeric
-	 * @return array
+	 * @return array<mixed>
 	 */
 	public static function krsort(array $arr, bool $numeric = false): array
 	{

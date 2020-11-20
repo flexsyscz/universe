@@ -4,6 +4,7 @@ namespace Flexsyscz\Universe\Model;
 
 use Flexsyscz\Universe\Exceptions\InvalidArgumentException;
 use MabeEnum\Enum;
+use Nette\Utils\Callback;
 use Nextras\Orm\Entity\ImmutableValuePropertyWrapper;
 use Nextras\Orm\Entity\Reflection\PropertyMetadata;
 
@@ -58,6 +59,6 @@ class EnumWrapper extends ImmutableValuePropertyWrapper
 	public function convertFromRawValue($value)
 	{
 		$enumClass = $this->enumClass;
-		return forward_static_call([$enumClass, 'byValue'], $value);
+		return forward_static_call(Callback::check([$enumClass, 'byValue']), $value);
 	}
 }

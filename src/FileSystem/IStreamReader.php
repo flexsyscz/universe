@@ -16,7 +16,7 @@ interface IStreamReader
 	public function open(string $filePath);
 
 	/**
-	 * @return IStreamReader
+	 * @return mixed
 	 */
 	public function read();
 

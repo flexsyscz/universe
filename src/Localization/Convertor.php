@@ -10,16 +10,16 @@ namespace Flexsyscz\Universe\Localization;
 class Convertor
 {
 	/**
-	 * @param $input
+	 * @param string|array<string> $input
 	 * @param string $charset
 	 * @param bool $transliteration
-	 * @return array|false|string
+	 * @return array<string|false>|false|string
 	 */
 	public static function convert($input, string $charset = 'windows-1250', bool $transliteration = true)
 	{
 		if(is_array($input)) {
 			foreach ($input as $key => $value) {
-				$input[$key] = iconv('utf-8', sprintf('%s%s', $charset, $transliteration ? '//TRANSLIT' : ''), $value);
+				$input[$key] = iconv('utf-8', sprintf('%s%s', $charset, $transliteration ? '//TRANSLIT' : ''), is_string($value) ? $value : '');
 			}
 
 			return $input;

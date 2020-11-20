@@ -23,7 +23,7 @@ class Translator implements ITranslator
 	/** @var string */
 	private $language;
 
-	/** @var array */
+	/** @var array<array> */
 	private $dictionaries;
 
 	/** @var ILogger */
@@ -33,7 +33,7 @@ class Translator implements ITranslator
 	/**
 	 * Translator constructor.
 	 * @param string $language
-	 * @param array $dictionaries
+	 * @param array<string> $dictionaries
 	 * @param ILogger $logger
 	 */
 	public function __construct(string $language, array $dictionaries, ILogger $logger)
@@ -77,7 +77,7 @@ class Translator implements ITranslator
 		}
 
 		$path = explode(self::DELIMITER, $message);
-		if(!$path) {
+		if(!is_array($path)) {
 			$this->logger->log(sprintf('Invalid message for translation: %s', $message), ILogger::ERROR);
 			return $message;
 		}
@@ -94,8 +94,8 @@ class Translator implements ITranslator
 
 
 	/**
-	 * @param array $node
-	 * @param array $path
+	 * @param array<mixed> $node
+	 * @param array<string> $path
 	 * @param mixed|null $count
 	 * @return string|null
 	 */
