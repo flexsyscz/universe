@@ -26,6 +26,10 @@ trait PresenterFlashesTrait
 			throw new InvalidArgumentException(sprintf('Argument $type is not valid constant of %s class.', MessageType::class));
 		}
 
+		if($this->isAjax()) {
+			$this->redrawControl('flashes');
+		}
+
 		return parent::flashMessage($message, $type);
 	}
 
