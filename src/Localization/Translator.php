@@ -2,7 +2,7 @@
 
 namespace Flexsyscz\Universe\Localization;
 
-use Nette\Localization\ITranslator;
+use Nette\Localization;
 use Nette\Neon\Neon;
 use Nette\Utils\FileSystem;
 use Tracy\ILogger;
@@ -12,7 +12,7 @@ use Tracy\ILogger;
  * Class Translator
  * @package Flexsyscz\Universe\Services
  */
-class Translator implements ITranslator
+class Translator implements Localization\Translator
 {
 	/** @var string */
 	private const PLACEHOLDER = '?';
@@ -121,6 +121,11 @@ class Translator implements ITranslator
 			if(is_array($node[$index])) {
 				return $this->lookup($node[$index], $path, $count);
 			} else {
+				if(preg_match('#^' . self::FOLLOW_SYMBOL . '#', $node[$index])) {
+					$path = preg_replace('#^' . self::FOLLOW_SYMBOL . '#', '', $node[$index]);
+					$path = explode(self::DELIMITER, $path);
+					return $this->lookup($this->dictionaries[$this->language], $path, $count);
+				}
 				return strval($node[$index]);
 			}
 		}
