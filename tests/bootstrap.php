@@ -5,6 +5,8 @@
 
 declare(strict_types=1);
 
+setlocale(LC_ALL, 'cs_CZ.utf8');
+
 if (@!include __DIR__ . '/../vendor/autoload.php') {
 	echo 'Install Nette Tester using `composer install`';
 	exit(1);
