@@ -21,6 +21,9 @@ class Translator implements ITranslator
 	private const DELIMITER = '.';
 
 	/** @var string */
+	private const FOLLOW_SYMBOL = '@';
+
+	/** @var string */
 	private $language;
 
 	/** @var array<array> */
@@ -73,6 +76,10 @@ class Translator implements ITranslator
 	{
 		if(!isset($this->dictionaries[$this->language])) {
 			$this->logger->log(sprintf("String %s cannot be translated to the language %s because dictionary is not available.", $this->language, $message), ILogger::ERROR);
+			return $message;
+		}
+
+		if(strpos($message, self::DELIMITER) === false) {
 			return $message;
 		}
 

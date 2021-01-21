@@ -39,9 +39,12 @@ test('', function () {
 
 	Assert::equal($translator->translate('messages.error.userNotFound'), 'Uživatel nenalezen.');
 	Assert::equal($translator->translate('content.homepage.header'), 'Dobrý den!');
+	Assert::equal($translator->translate('content.homepage.description.part3'), 'Dobrý den!');
 
 	$translator->setLanguage(LanguageType::ENGLISH)
 		->translate('content.homepage.header', 'Hello world!');
+
+	Assert::equal($translator->translate('content.homepage.description.part3'), 'Hello world!');
 
 	Assert::false(file_exists(getLogDir() . '/error.log'));
 });

@@ -45,3 +45,4 @@ content:
 		description:
 			part1: "Lorem ipsum 1"
 			part2: "et dolores el simet 2"
+			part3: @content.homepage.header
