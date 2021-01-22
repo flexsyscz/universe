@@ -32,7 +32,7 @@ before(function () {
 
 test('', function () {
 	$logger = new \Tracy\Logger(getMyLogDir());
-	$translator = new Universe\Localization\Translator(LanguageType::CZECH, [
+	$translator = new Universe\Localization\Translator(true, LanguageType::CZECH, [
 		LanguageType::CZECH => __DIR__ . '/../resources/cs_CZ.neon',
 		LanguageType::ENGLISH => __DIR__ . '/../resources/en_US.neon',
 	], $logger);

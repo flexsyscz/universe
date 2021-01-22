@@ -2,6 +2,8 @@
 
 namespace Flexsyscz\Universe\Localization;
 
+use Flexsyscz\Universe\Exceptions\InvalidArgumentException;
+use Flexsyscz\Universe\Exceptions\InvalidStateException;
 use Nette\Localization;
 use Nette\Neon\Neon;
 use Nette\Utils\FileSystem;
@@ -23,6 +25,12 @@ class Translator implements Localization\Translator
 	/** @var string */
 	private const FOLLOW_SYMBOL = '@';
 
+	/** @var int */
+	private const MAX_FOLLOWINGS = 5;
+
+	/** @var bool */
+	private $debugMode;
+
 	/** @var string */
 	private $language;
 
@@ -32,15 +40,20 @@ class Translator implements Localization\Translator
 	/** @var ILogger */
 	private $logger;
 
+	/** @var int */
+	private $followings;
+
 
 	/**
 	 * Translator constructor.
+	 * @param bool $debugMode
 	 * @param string $language
-	 * @param array<string> $dictionaries
+	 * @param array $dictionaries
 	 * @param ILogger $logger
 	 */
-	public function __construct(string $language, array $dictionaries, ILogger $logger)
+	public function __construct(bool $debugMode, string $language, array $dictionaries, ILogger $logger)
 	{
+		$this->debugMode = $debugMode;
 		$this->language = $language;
 		$this->dictionaries = [];
 		$this->logger = $logger;
@@ -49,7 +62,7 @@ class Translator implements Localization\Translator
 			try {
 				$this->dictionaries[$_language] = Neon::decode(FileSystem::read($dictionary));
 			} catch(\Exception $e) {
-				$this->logger->log(sprintf('Unable to read language dictionary: [%s] %s', $_language, $dictionary), ILogger::ERROR);
+				$this->logError(sprintf('Unable to read language dictionary: [%s] %s', $_language, $dictionary));
 			}
 		}
 	}
@@ -75,7 +88,7 @@ class Translator implements Localization\Translator
 	public function translate($message, ...$parameters): string
 	{
 		if(!isset($this->dictionaries[$this->language])) {
-			$this->logger->log(sprintf("String %s cannot be translated to the language %s because dictionary is not available.", $this->language, $message), ILogger::ERROR);
+			$this->logError(sprintf("String %s cannot be translated to the language %s because dictionary is not available.", $this->language, $message));
 			return $message;
 		}
 
@@ -85,51 +98,81 @@ class Translator implements Localization\Translator
 
 		$path = explode(self::DELIMITER, $message);
 		if(!is_array($path)) {
-			$this->logger->log(sprintf('Invalid message for translation: %s', $message), ILogger::ERROR);
+			$this->logError(sprintf('Invalid message for translation: %s', $message));
 			return $message;
 		}
 
-		$count = isset($parameters[0]) ? $parameters[0] : null;
-		$translation = $this->lookup($this->dictionaries[$this->language], $path, $count);
-		if(!$translation) {
-			$this->logger->log(sprintf('Message %s not found in dictionary %s.', $message, $this->language), ILogger::ERROR);
-			return $message;
+		try {
+			$this->followings = 0;
+
+			$count = isset($parameters[0]) ? $parameters[0] : null;
+			return $this->lookup($this->dictionaries[$this->language], $path, $count);
+
+		} catch(InvalidArgumentException $e) {
+			$this->logError(sprintf('Message %s not found in dictionary %s.', $message, $this->language));
+
+		} catch(InvalidStateException $e) {
+			$this->logError(sprintf('Message %s exceeds max. followings in dictionary %s.', $message, $this->language));
 		}
 
-		return $translation;
+		return $message;
 	}
 
 
 	/**
-	 * @param array<mixed> $node
-	 * @param array<string> $path
-	 * @param mixed|null $count
-	 * @return string|null
+	 * @param array $node
+	 * @param array $path
+	 * @param null $count
+	 * @param array|null $tail
+	 * @return string
 	 */
-	private function lookup(array $node, array $path, $count = null): ?string
+	private function lookup(array $node, array $path, $count = null, array $tail = null): string
 	{
 		if(empty($path)) {
-			return isset($node[$count])
-				? $node[$count]
-				: (isset($node[self::PLACEHOLDER])
-					? sprintf($node[self::PLACEHOLDER], $count)
-					: null);
+			if(isset($node[$count])) {
+				return $node[$count];
+			} else if(isset($node[self::PLACEHOLDER])) {
+				return sprintf($node[self::PLACEHOLDER], $count);
+			}
+
+			throw new InvalidArgumentException();
 		}
 
 		$index = array_shift($path);
 		if(isset($node[$index])) {
 			if(is_array($node[$index])) {
-				return $this->lookup($node[$index], $path, $count);
+				if(count($path) === 0 && $tail) {
+					return $this->lookup($node[$index], $tail, $count);
+				}
+				return $this->lookup($node[$index], $path, $count, $tail);
 			} else {
 				if(preg_match('#^' . self::FOLLOW_SYMBOL . '#', $node[$index])) {
+					$this->followings++;
+
+					if($this->followings > self::MAX_FOLLOWINGS) {
+						throw new InvalidStateException();
+					}
+
+					$tail = count($path) > 0 ? $path : null;
 					$path = preg_replace('#^' . self::FOLLOW_SYMBOL . '#', '', $node[$index]);
 					$path = explode(self::DELIMITER, $path);
-					return $this->lookup($this->dictionaries[$this->language], $path, $count);
+					return $this->lookup($this->dictionaries[$this->language], $path, $count, $tail);
 				}
 				return strval($node[$index]);
 			}
 		}
 
-		return null;
+		throw new InvalidArgumentException();
+	}
+
+
+	/**
+	 * @param string $message
+	 */
+	private function logError(string $message)
+	{
+		if($this->debugMode) {
+			$this->logger->log($message, ILogger::ERROR);
+		}
 	}
 }

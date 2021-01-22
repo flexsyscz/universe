@@ -46,3 +46,5 @@ content:
 			part1: "Lorem ipsum 1"
 			part2: "et dolores el simet 2"
 			part3: @content.homepage.header
+			part4: @content.homepage.description
+			part5: @content.homepage.description.part5
