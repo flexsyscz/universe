@@ -6,10 +6,10 @@ use Flexsyscz\Universe\Exceptions\InvalidArgumentException;
 
 
 /**
- * Trait PresenterFlashesTrait
+ * Trait Messages
  * @package Flexsyscz\UI\Messaging
  */
-trait PresenterFlashesTrait
+trait Messages
 {
 	/**
 	 * @param $message
