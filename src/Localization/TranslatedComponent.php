@@ -12,19 +12,33 @@ trait TranslatedComponent
 	/** @var TranslatorNamespace */
 	private $translatorNamespace;
 
+	/** @var \ReflectionClass */
+	private $reflection;
+
 
 	/**
 	 * @param TranslatorNamespaceFactory $factory
 	 */
 	public function injectTranslator(TranslatorNamespaceFactory $factory)
 	{
-		$reflection = new \ReflectionClass($this);
-		$dir = dirname($reflection->getFileName()) . '/translations';
+		$this->reflection = new \ReflectionClass($this);
+		$dir = dirname($this->reflection->getFileName()) . '/translations';
 
-		$namespace = $reflection->hasConstant('TRANSLATOR_NAMESPACE') ? $reflection->getConstant('TRANSLATOR_NAMESPACE') : $reflection->getName();
+		$namespace = self::ns();
 		$translatorNamespace = $factory->create($namespace);
 		$translatorNamespace->translator->addDirectory($dir, $namespace);
 
 		$this->translatorNamespace = $translatorNamespace;
+	}
+
+
+	/**
+	 * @param string|null $name
+	 * @return string
+	 */
+	public function ns(string $name = null): string
+	{
+		$ns = $this->reflection->hasConstant('TRANSLATOR_NAMESPACE') ? $this->reflection->getConstant('TRANSLATOR_NAMESPACE') : $this->reflection->getName();
+		return $name ? sprintf('!%s.%s', $ns, $name) : $ns;
 	}
 }
