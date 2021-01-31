@@ -24,10 +24,23 @@ ago:
 	second:
 		1: před chvílí
 		2: před chvílí
-		?: před %s vteřinami
+		?: před %s sek.
+	minute:
+		1: před minutou
+		?: před %s min.
+	hour:
+		1: před hodinou
+		?: před %s hod.
 	day:
 		1: včera
+		2: předevčírem
 		?: před %s dny
 	week:
 		1: před týdnem
 		?: před %s týdny
+	month:
+		1: před měsícem
+		?: před %s měsíci
+	year:
+		1: před rokem
+		?: před %s roky

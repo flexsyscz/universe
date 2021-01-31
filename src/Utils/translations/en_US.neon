@@ -22,6 +22,24 @@ days:
 ago:
 	justNow: just now
 	second:
-		1: few seconds ago
-		2: few seconds ago
-		?: %s seconds ago
+		1: few moments ago
+		2: few moments ago
+		?: %s secs. ago
+	minute:
+		1: a minute ago
+		?: %s mins. ago
+	hour:
+		1: an hour ago
+		?: %s hrs. ago
+	day:
+		1: yesterday
+		?: %s days ago
+	week:
+		1: a week ago
+		?: %s weeks ago
+	month:
+		1: a month ago
+		?: %s months ago
+	year:
+		1: last year
+		?: %s years ago
