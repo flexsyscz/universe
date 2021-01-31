@@ -25,19 +25,32 @@ function getMyLogDir() {
 }
 
 
+function getConfig() {
+	return [
+		'debugMode' => true,
+		'default' => LanguageType::CZECH,
+		'fallback' => LanguageType::ENGLISH,
+		'languages' => [
+			LanguageType::CZECH => __DIR__ . '/../resources/cs_CZ.neon',
+			LanguageType::ENGLISH => __DIR__ . '/../resources/en_US.neon',
+		],
+	];
+}
+
+
 before(function () {
 	Tester\Helpers::purge(getMyLogDir());
 });
 
 
 test('', function () {
+	$config = getConfig();
 	$logger = new \Tracy\Logger(getMyLogDir());
-	$translator = new Universe\Localization\Translator(true, LanguageType::CZECH, [
-		LanguageType::CZECH => __DIR__ . '/../resources/cs_CZ.neon',
-		LanguageType::ENGLISH => __DIR__ . '/../resources/en_US.neon',
-	], $logger);
+	$translator = new Universe\Localization\Translator($config, $logger);
+	$translatorNamespaceFactory = new Universe\Localization\TranslatorNamespaceFactory($translator);
 
-	$dateTimeProvider = new Universe\Utils\DateTimeProvider($translator);
+	$dateTimeProvider = new Universe\Utils\DateTimeProvider();
+	$dateTimeProvider->injectTranslator($translatorNamespaceFactory);
 	$now = Universe\Utils\DateTimeProvider::now();
 
 	Assert::true($now instanceof DateTimeImmutable);

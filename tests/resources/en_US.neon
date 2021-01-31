@@ -1,32 +1,4 @@
-flexsyscz:
-	DateTimeProvider:
-		months:
-			january: january
-			february: february
-			march: march
-			april: april
-			may: may
-			june: june
-			july: july
-			august: august
-			september: september
-			october: october
-			november: november
-			december: december
-		days:
-			monday: monday
-			tuesday: tuesday
-			wednesday: wednesday
-			thursday: thursday
-			friday: friday
-			saturday: saturday
-			sunday: sunday
-		ago:
-			justNow: just now
-			second:
-				1: few seconds ago
-				2: few seconds ago
-				?: %s seconds ago
++parent: parents/en_US.neon
 
 messages:
 	error:

@@ -3,7 +3,7 @@
 namespace Flexsyscz\Universe\Utils;
 
 use Flexsyscz\Universe\Exceptions\InvalidDateTimeException;
-use Flexsyscz\Universe\Localization\Translator;
+use Flexsyscz\Universe\Localization\TranslatedComponent;
 use Nextras\Dbal\Utils\DateTimeImmutable;
 
 
@@ -13,18 +13,7 @@ use Nextras\Dbal\Utils\DateTimeImmutable;
  */
 class DateTimeProvider
 {
-	/** @var Translator */
-	private $translator;
-
-
-	/**
-	 * DateTimeProvider constructor.
-	 * @param Translator $translator
-	 */
-	public function __construct(Translator $translator)
-	{
-		$this->translator = $translator;
-	}
+	use TranslatedComponent;
 
 
 	/**
@@ -73,10 +62,10 @@ class DateTimeProvider
 		foreach($values as $n => $v) {
 			if ($v > 0) {
 				$count = $v >= 5 ? $v : ($v === 1 ? 1 : 2);
-				return $this->translator->translate(sprintf('flexsyscz.DateTimeProvider.ago.%s', $n), $count);
+				return $this->translatorNamespace->translate(sprintf('ago.%s', $n), $count);
 			}
 		}
 
-		return $this->translator->translate('flexsyscz.DateTimeProvider.ago.justNow');
+		return $this->translatorNamespace->translate('ago.justNow');
 	}
 }
