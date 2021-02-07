@@ -28,6 +28,8 @@ function getMyLogDir() {
 function getConfig() {
 	return [
 		'debugMode' => true,
+		'logging' => true,
+		'appDir' => __DIR__ . '/../',
 		'default' => LanguageType::CZECH,
 		'fallback' => LanguageType::ENGLISH,
 		'languages' => [

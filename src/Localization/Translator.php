@@ -4,8 +4,10 @@ namespace Flexsyscz\Universe\Localization;
 
 use Flexsyscz\Universe\Exceptions\InvalidArgumentException;
 use Flexsyscz\Universe\Exceptions\InvalidStateException;
+use Latte\Runtime\FilterExecutor;
 use Nette\Localization;
 use Nette\Neon\Neon;
+use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Tracy\ILogger;
 
@@ -13,9 +15,14 @@ use Tracy\ILogger;
 /**
  * Class Translator
  * @package Flexsyscz\Universe\Services
+ *
+ * @property-read string		$language
+ * @property-read array			$debugStack
  */
 final class Translator implements Localization\Translator
 {
+	use SmartObject;
+
 	/** @var string */
 	public const DEFAULT_NAMESPACE = 'default';
 
@@ -37,6 +44,12 @@ final class Translator implements Localization\Translator
 	/** @var bool */
 	private $debugMode;
 
+	/** @var bool */
+	private $logging;
+
+	/** @var false|string */
+	private $appDir;
+
 	/** @var string */
 	private $language;
 
@@ -48,6 +61,12 @@ final class Translator implements Localization\Translator
 
 	/** @var ILogger */
 	private $logger;
+
+	/** @var array|null */
+	private $debugStack = null;
+
+	/** @var array */
+	private $sniffer;
 
 	/** @var int */
 	private $followings;
@@ -68,10 +87,18 @@ final class Translator implements Localization\Translator
 		}
 
 		$this->debugMode = isset($parameters['debugMode']) && is_bool($parameters['debugMode']) ? $parameters['debugMode'] : false;
+		$this->logging = isset($parameters['logging']) && is_bool($parameters['logging']) ? $parameters['logging'] : false;
+		$this->appDir = isset($parameters['appDir']) && is_string($parameters['appDir']) ? FileSystem::normalizePath($parameters['appDir'] . '/../') : false;
 		$this->namespace = isset($parameters['namespace']) ? $parameters['namespace'] : self::DEFAULT_NAMESPACE;
 		$this->language = $parameters['default'];
 		$this->fallback = isset($parameters['fallback']) ? $parameters['fallback'] : $this->language;
 		$this->logger = $logger;
+
+		if($this->debugMode) {
+			$this->debugStack = [
+				'dictionaries' => [],
+			];
+		}
 
 		$this->dictionaries = [];
 		if(isset($parameters['languages']) && is_array($parameters['languages'])) {
@@ -118,6 +145,14 @@ final class Translator implements Localization\Translator
 				}
 
 				$this->dictionaries[$language][$namespace] = $dictionary;
+
+				if($this->debugMode) {
+					if(!isset($this->debugStack['dictionaries'][$language])) {
+						$this->debugStack['dictionaries'][$language] = [];
+					}
+
+					$this->debugStack['dictionaries'][$language][$namespace] = $this->normalizeFilePath($filePath);
+				}
 				$this->info(sprintf('Dictionary installed: [%s]:%s from path %s', $language, $namespace, $filePath));
 			}
 
@@ -168,6 +203,15 @@ final class Translator implements Localization\Translator
 
 
 	/**
+	 * @return string
+	 */
+	public function getLanguage(): string
+	{
+		return $this->language;
+	}
+
+
+	/**
 	 * @param string $namespace
 	 * @return $this
 	 */
@@ -209,17 +253,59 @@ final class Translator implements Localization\Translator
 			}
 			$entryNode = isset($this->dictionaries[$this->language][$namespace]) ? $this->dictionaries[$this->language][$namespace] : [];
 
-			return $this->lookup($entryNode, $path, $count);
+			if($this->debugMode) {
+				$backtrace = [];
+				foreach(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 5) as $level) {
+					$className = isset($level['object']) ? get_class($level['object']) : null;
+					if($className === FilterExecutor::class) {
+						$backtrace[] = $this->normalizeFilePath($level['file']);
+						break;
+					}
+
+					$backtrace[] = $className ?: $level['file'];
+				}
+
+				$this->sniffer = [
+					'message' => $message,
+					'backtrace' => array_reverse($backtrace),
+					'lookup' => [
+						'namespace' => $namespace,
+					],
+				];
+			}
+
+			$translation = $this->lookup($entryNode, $path, $count);
+			if($this->debugMode) {
+				$this->sniffer['translation'] = $translation;
+				$this->debugStack[] = $this->sniffer;
+			}
+
+			return $translation;
 
 		} catch(InvalidArgumentException $e) {
-			$this->error(sprintf('Message %s not found in dictionary [%s]:%s.', $message, $this->language, $this->namespace));
+			$error = sprintf('Message %s not found in dictionary [%s]:%s.', $message, $this->language, $this->namespace);
+			if($this->debugMode) {
+				$this->sniffer['error'] = $error;
+			}
+
+			$this->error($error);
 
 		} catch(InvalidStateException $e) {
-			$this->error(sprintf('Message %s exceeds max. followings in dictionary [%s]:%s.', $message, $this->language, $this->namespace));
+			$error = sprintf('Message %s exceeds max. followings in dictionary [%s]:%s.', $message, $this->language, $this->namespace);
+			if($this->debugMode) {
+				$this->sniffer['error'] = $error;
+			}
+
+			$this->error($error);
 		}
 
 		if($this->fallback !== $this->language) {
-			$this->info(sprintf('Trying fallback language %s for message %s', $this->fallback, $message));
+			$info = sprintf('Trying fallback language %s for message %s', $this->fallback, $message);
+			$this->info($info);
+
+			if($this->debugMode) {
+				$this->sniffer['info'] = $error;
+			}
 
 			$tmp = $this->language;
 			$this->language = $this->fallback;
@@ -228,6 +314,9 @@ final class Translator implements Localization\Translator
 			$this->language = $tmp;
 		}
 
+		if($this->debugMode) {
+			$this->debugStack[] = $this->sniffer;
+		}
 		return $message;
 	}
 
@@ -253,6 +342,10 @@ final class Translator implements Localization\Translator
 
 		$index = array_shift($path);
 		if(isset($node[$index])) {
+			if($this->debugMode) {
+				$this->sniffer['lookup'][] = $index;
+			}
+
 			if(is_array($node[$index])) {
 				if(count($path) === 0 && $tail) {
 					return $this->lookup($node[$index], $tail, $count);
@@ -284,7 +377,7 @@ final class Translator implements Localization\Translator
 	 */
 	private function info(string $message)
 	{
-		if($this->debugMode) {
+		if($this->logging) {
 			$this->logger->log($message, ILogger::INFO);
 		}
 	}
@@ -295,8 +388,27 @@ final class Translator implements Localization\Translator
 	 */
 	private function error(string $message)
 	{
-		if($this->debugMode) {
+		if($this->logging) {
 			$this->logger->log($message, ILogger::ERROR);
 		}
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getDebugStack(): array
+	{
+		return $this->debugStack;
+	}
+
+
+	/**
+	 * @param $filePath
+	 * @return string
+	 */
+	private function normalizeFilePath($filePath): string
+	{
+		return $this->appDir ? preg_replace('#^' . $this->appDir . '#', '', $filePath) : $filePath;
 	}
 }
