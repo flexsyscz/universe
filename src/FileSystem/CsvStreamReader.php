@@ -9,7 +9,7 @@ use Flexsyscz\Universe\Exceptions\InvalidStateException;
  * Class CsvStreamReader
  * @package Flexsyscz\Universe\FileSystem
  */
-class CsvStreamReader implements IStreamReader
+class CsvStreamReader implements StreamReader
 {
 	/** @var string */
 	public const DELIMITER = ';';

@@ -4,24 +4,25 @@ namespace Flexsyscz\Universe\FileSystem;
 
 
 /**
- * Interface IStreamReader
+ * Interface StreamWriter
  * @package Flexsyscz\Universe\FileSystem
  */
-interface IStreamReader
+interface StreamWriter
 {
 	/**
 	 * @param string $filePath
-	 * @return IStreamReader
+	 * @return StreamWriter
 	 */
 	public function open(string $filePath);
 
 	/**
-	 * @return mixed
+	 * @param array<string>|string $data
+	 * @return StreamWriter
 	 */
-	public function read();
+	public function write($data);
 
 	/**
-	 * @return IStreamReader
+	 * @return StreamWriter
 	 */
 	public function close();
 }

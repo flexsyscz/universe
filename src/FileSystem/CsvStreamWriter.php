@@ -9,7 +9,7 @@ use Flexsyscz\Universe\Exceptions\InvalidStateException;
  * Class CsvStreamWriter
  * @package Flexsyscz\Universe\FileSystem
  */
-class CsvStreamWriter implements IStreamWriter
+class CsvStreamWriter implements StreamWriter
 {
 	/** @var string */
 	public const DELIMITER = ';';
