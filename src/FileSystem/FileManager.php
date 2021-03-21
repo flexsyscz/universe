@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Flexsyscz\Universe\FileSystem;
 
@@ -20,7 +21,7 @@ class FileManager
 	private $partitions;
 
 	/** @var string|null */
-	private $workingDirectory = null;
+	private $workingDirectory;
 
 
 	/**
@@ -40,7 +41,7 @@ class FileManager
 	 */
 	public function addPartition(string $name, string $path): self
 	{
-		if($this->partitions->offsetExists($name)) {
+		if ($this->partitions->offsetExists($name)) {
 			throw new DuplicatePartitionException(sprintf('Partition %s is already exist.', $name));
 		}
 
@@ -56,7 +57,7 @@ class FileManager
 	 */
 	public function removePartition(string $name): self
 	{
-		if(!$this->partitions->offsetExists($name)) {
+		if (!$this->partitions->offsetExists($name)) {
 			throw new PartitionNotFoundException(sprintf('Partition %s not found.', $name));
 		}
 
@@ -66,13 +67,9 @@ class FileManager
 	}
 
 
-	/**
-	 * @param string $name
-	 * @return string
-	 */
 	public function getPartitionPath(string $name): string
 	{
-		if(!$this->partitions->offsetExists($name)) {
+		if (!$this->partitions->offsetExists($name)) {
 			throw new PartitionNotFoundException(sprintf('Partition %s not found.', $name));
 		}
 
@@ -88,25 +85,25 @@ class FileManager
 	public function scan(string $name, string $filePath = null): array
 	{
 		$path = $this->getPartitionPath($name);
-		if(!file_exists($path)) {
+		if (!file_exists($path)) {
 			throw new InvalidArgumentException(sprintf('Partition\'s path is invalid: %s', $path));
 		}
 
-		if($filePath) {
+		if ($filePath) {
 			$path = $this->absolutePath($filePath);
 		}
 
-		if(!is_dir($path)) {
+		if (!is_dir($path)) {
 			throw new InvalidArgumentException(sprintf('Destination is not a directory: %s', $path));
 		}
 
 		$scan = scandir($path);
-		if(!$scan) {
+		if (!$scan) {
 			throw new FileManagerException('Unknown error occurred.');
 		}
 
-		foreach(['.', '..'] as $ignored) {
-			if(($key = array_search($ignored, $scan)) !== false) {
+		foreach (['.', '..'] as $ignored) {
+			if (($key = array_search($ignored, $scan, true)) !== false) {
 				unset($scan[$key]);
 			}
 		}
@@ -121,7 +118,7 @@ class FileManager
 	 */
 	public function use(string $name): self
 	{
-		if(!$this->partitions->offsetExists($name)) {
+		if (!$this->partitions->offsetExists($name)) {
 			throw new PartitionNotFoundException(sprintf('Partition %s not found.', $name));
 		}
 
@@ -131,15 +128,12 @@ class FileManager
 	}
 
 
-	/**
-	 * @param string $file
-	 * @param string|null $partition
-	 * @return string
-	 */
 	public function absolutePath(string $file, string $partition = null): string
 	{
-		$path = $partition ? $this->getPartitionPath($partition) : $this->workingDirectory;
-		if(!$path) {
+		$path = $partition
+			? $this->getPartitionPath($partition)
+			: $this->workingDirectory;
+		if (!$path) {
 			throw new InvalidArgumentException('Path not found.');
 		}
 
@@ -147,13 +141,9 @@ class FileManager
 	}
 
 
-	/**
-	 * @param string $file
-	 * @return string
-	 */
 	public function read(string $file): string
 	{
-		if(!$this->workingDirectory) {
+		if (!$this->workingDirectory) {
 			throw new FileManagerException('Working directory is not set.');
 		}
 
@@ -169,7 +159,7 @@ class FileManager
 	 */
 	public function write(string $file, string $content, ?int $mode = 0666): self
 	{
-		if(!$this->workingDirectory) {
+		if (!$this->workingDirectory) {
 			throw new FileManagerException('Working directory is not set.');
 		}
 
@@ -188,7 +178,7 @@ class FileManager
 	 */
 	public function rename(string $origin, string $target, bool $overwrite = true, string $targetPartition = null): self
 	{
-		if(!$this->workingDirectory) {
+		if (!$this->workingDirectory) {
 			throw new FileManagerException('Working directory is not set.');
 		}
 
@@ -204,7 +194,7 @@ class FileManager
 	 */
 	public function delete(string $file): self
 	{
-		if(!$this->workingDirectory) {
+		if (!$this->workingDirectory) {
 			throw new FileManagerException('Working directory is not set.');
 		}
 
@@ -223,7 +213,7 @@ class FileManager
 	 */
 	public function copy(string $origin, string $target, bool $overwrite = true, string $targetPartition = null): self
 	{
-		if(!$this->workingDirectory) {
+		if (!$this->workingDirectory) {
 			throw new FileManagerException('Working directory is not set.');
 		}
 
@@ -253,7 +243,7 @@ class FileManager
 	 */
 	public function createDir(string $dir, int $mode = 0777): self
 	{
-		if(!$this->workingDirectory) {
+		if (!$this->workingDirectory) {
 			throw new FileManagerException('Working directory is not set.');
 		}
 

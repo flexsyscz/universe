@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Flexsyscz\Universe\Localization;
 
@@ -25,24 +26,19 @@ class TranslationPanel implements IBarPanel
 		$this->translator = $translator;
 	}
 
-	/**
-	 * @return string
-	 */
+
 	public function getTab(): string
 	{
-		$template = new Engine();
+		$template = new Engine;
 		return $template->renderToString(__DIR__ . '/templates/tab.latte');
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function getPanel(): string
 	{
-		$template = new Engine();
+		$template = new Engine;
 		return $template->renderToString(__DIR__ . '/templates/panel.latte', [
-			'translator' => $this->translator
+			'translator' => $this->translator,
 		]);
 	}
 }

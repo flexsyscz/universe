@@ -1,4 +1,5 @@
-<?php declare(strict_types = 1);
+<?php
+declare(strict_types=1);
 
 namespace Flexsyscz\Universe\Utils;
 
@@ -15,18 +16,14 @@ class DateTimeProvider
 {
 	use TranslatedComponent;
 
-
-	/**
-	 * @return DateTimeImmutable
-	 */
 	public static function now(): DateTimeImmutable
 	{
 		try {
-			$now = new DateTimeImmutable();
+			$now = new DateTimeImmutable;
 		} catch (\Exception $e) {
 			$now = DateTimeImmutable::createFromFormat('c', date('c'));
-			if($now === false) {
-				throw new InvalidDateTimeException();
+			if ($now === false) {
+				throw new InvalidDateTimeException;
 			}
 		}
 
@@ -34,10 +31,6 @@ class DateTimeProvider
 	}
 
 
-	/**
-	 * @param DateTimeImmutable $ago
-	 * @return string
-	 */
 	public function ago(DateTimeImmutable $ago): string
 	{
 		$params = [
@@ -52,14 +45,15 @@ class DateTimeProvider
 
 		$diff = self::now()->diff($ago);
 		$values = [];
-		foreach($params as $k => $n) {
-			$values[$n] = isset($diff->$k) ? $diff->$k : 0;
-			if($k === 'w') {
-				$values[$n] = intval(floor($diff->d / 7));
+		foreach ($params as $k => $n) {
+			if ($k === 'w') {
+				$values[$n] = (int) (floor($diff->d / 7));
+			} else {
+				$values[$n] = $diff->$k ?? 0;
 			}
 		}
 
-		foreach($values as $n => $v) {
+		foreach ($values as $n => $v) {
 			if ($v > 0) {
 				$count = $v >= 5 ? $v : ($v === 1 ? 1 : 2);
 				return $this->translatorNamespace->translate(sprintf('ago.%s', $n), $count);

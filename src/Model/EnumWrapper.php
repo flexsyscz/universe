@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Flexsyscz\Universe\Model;
 
@@ -27,12 +28,12 @@ class EnumWrapper extends ImmutableValuePropertyWrapper
 	{
 		parent::__construct($propertyMetadata);
 
-		if(count($propertyMetadata->types) !== 1) {
+		if (count($propertyMetadata->types) !== 1) {
 			throw new InvalidArgumentException('Invalid count of types.');
 		}
 
 		$this->enumClass = key($propertyMetadata->types);
-		if(!class_exists($this->enumClass)) {
+		if (!class_exists($this->enumClass)) {
 			throw new InvalidArgumentException(sprintf('Class %s not found.', $this->enumClass));
 		}
 	}
@@ -44,7 +45,7 @@ class EnumWrapper extends ImmutableValuePropertyWrapper
 	 */
 	public function convertToRawValue($value)
 	{
-		if($value instanceof Enum) {
+		if ($value instanceof Enum) {
 			return $value->getValue();
 		}
 

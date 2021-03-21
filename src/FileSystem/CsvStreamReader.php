@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Flexsyscz\Universe\FileSystem;
 
@@ -11,7 +12,6 @@ use Flexsyscz\Universe\Exceptions\InvalidStateException;
  */
 class CsvStreamReader implements StreamReader
 {
-	/** @var string */
 	public const DELIMITER = ';';
 
 	/** @var resource */
@@ -25,12 +25,12 @@ class CsvStreamReader implements StreamReader
 	public function open(string $filePath): self
 	{
 		$file = fopen($filePath, 'r');
-		if(!$file) {
+		if (!$file) {
 			throw new InvalidStateException(sprintf('Unable to open a stream to the file %s', $filePath));
 		}
 
 		$this->file = $file;
-		if(!flock($this->file, LOCK_EX)) {
+		if (!flock($this->file, LOCK_EX)) {
 			throw new InvalidStateException(sprintf('Unable to set a lock on the file %s', $filePath));
 		}
 
@@ -45,9 +45,13 @@ class CsvStreamReader implements StreamReader
 	 * @param string $escapeChar
 	 * @return array<mixed>|false
 	 */
-	public function read(int $length = 0, string $delimiter = self::DELIMITER, string $enclosure = "'", string $escapeChar = "\\")
-	{
-		if(($result = fgetcsv($this->file, $length, $delimiter, $enclosure, $escapeChar)) === null) { // @phpstan-ignore-line
+	public function read(
+		int $length = 0,
+		string $delimiter = self::DELIMITER,
+		string $enclosure = "'",
+		string $escapeChar = '\\'
+	) {
+		if (($result = fgetcsv($this->file, $length, $delimiter, $enclosure, $escapeChar)) === null) { // @phpstan-ignore-line
 			throw new InvalidStateException('Unable to read the data from the CSV stream.');
 		}
 
@@ -60,7 +64,7 @@ class CsvStreamReader implements StreamReader
 	 */
 	public function close(): self
 	{
-		if(!flock($this->file, LOCK_UN)) {
+		if (!flock($this->file, LOCK_UN)) {
 			throw new InvalidStateException('Unable to release the file\'s lock.');
 		}
 

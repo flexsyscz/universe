@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Flexsyscz\Universe\FileSystem;
 
@@ -27,12 +28,9 @@ trait FileObject
 	private $type;
 
 
-	/**
-	 * @return bool
-	 */
 	public function isImage(): bool
 	{
-		if(!$this->isImage) {
+		if (!$this->isImage) {
 			$this->isImage = in_array($this->type, FileUpload::IMAGE_MIME_TYPES, true);
 		}
 
@@ -40,27 +38,18 @@ trait FileObject
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function getName(): string
 	{
 		return $this->name;
 	}
 
 
-	/**
-	 * @return int
-	 */
 	public function getSize(): int
 	{
 		return $this->size;
 	}
 
 
-	/**
-	 * @return string|null
-	 */
 	public function getType(): ?string
 	{
 		return $this->type;

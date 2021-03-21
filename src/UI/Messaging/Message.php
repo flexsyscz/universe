@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Flexsyscz\UI\Messaging;
 
@@ -42,27 +43,18 @@ class Message
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function getText(): string
 	{
 		return $this->text;
 	}
 
 
-	/**
-	 * @return string|null
-	 */
 	public function getName(): ?string
 	{
 		return $this->name;
 	}
 
 
-	/**
-	 * @return DateTimeImmutable
-	 */
 	public function getCreated(): DateTimeImmutable
 	{
 		return $this->created;

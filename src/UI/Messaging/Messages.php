@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Flexsyscz\UI\Messaging;
 
@@ -18,15 +19,15 @@ trait Messages
 	 */
 	public function flashMessage($message, $type = 'info'): \stdClass
 	{
-		if(!$message instanceof Message) {
+		if (!$message instanceof Message) {
 			throw new InvalidArgumentException(sprintf('Argument $message must be instance of %s.', Message::class));
 		}
 
-		if(!in_array($type, MessageType::getConstants(), true)) {
+		if (!in_array($type, MessageType::getConstants(), true)) {
 			throw new InvalidArgumentException(sprintf('Argument $type is not valid constant of %s class.', MessageType::class));
 		}
 
-		if($this->isAjax()) {
+		if ($this->isAjax()) {
 			$this->redrawControl('flashes');
 		}
 
@@ -34,11 +35,6 @@ trait Messages
 	}
 
 
-	/**
-	 * @param string $message
-	 * @param string|null $caption
-	 * @return \stdClass
-	 */
 	public function flashInfo(string $message, string $caption = null): \stdClass
 	{
 		$message = new Message($message, $caption);
@@ -46,11 +42,6 @@ trait Messages
 	}
 
 
-	/**
-	 * @param string $message
-	 * @param string|null $caption
-	 * @return \stdClass
-	 */
 	public function flashWarning(string $message, string $caption = null): \stdClass
 	{
 		$message = new Message($message, $caption);
@@ -58,11 +49,6 @@ trait Messages
 	}
 
 
-	/**
-	 * @param string $message
-	 * @param string|null $caption
-	 * @return \stdClass
-	 */
 	public function flashError(string $message, string $caption = null): \stdClass
 	{
 		$message = new Message($message, $caption);
@@ -70,11 +56,6 @@ trait Messages
 	}
 
 
-	/**
-	 * @param string $message
-	 * @param string|null $caption
-	 * @return \stdClass
-	 */
 	public function flashSuccess(string $message, string $caption = null): \stdClass
 	{
 		$message = new Message($message, $caption);

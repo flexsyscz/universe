@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Flexsyscz\Universe\Localization;
 
@@ -36,18 +37,12 @@ final class TranslatorNamespace implements Localization\Translator
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function getNamespace(): string
 	{
 		return $this->namespace;
 	}
 
 
-	/**
-	 * @return Translator
-	 */
 	public function getTranslator(): Translator
 	{
 		return $this->translator;

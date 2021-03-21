@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Flexsyscz\Universe\Localization;
 
@@ -23,10 +24,6 @@ final class TranslatorNamespaceFactory
 	}
 
 
-	/**
-	 * @param string $namespace
-	 * @return TranslatorNamespace
-	 */
 	public function create(string $namespace): TranslatorNamespace
 	{
 		return new TranslatorNamespace($namespace, $this->translator);

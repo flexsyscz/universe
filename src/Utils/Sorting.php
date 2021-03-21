@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Flexsyscz\Universe\Utils;
 
@@ -16,7 +17,7 @@ class Sorting
 	 */
 	public static function asort(array $arr, bool $numeric = false): array
 	{
-		uasort($arr, function($a, $b) use ($numeric) {
+		uasort($arr, function ($a, $b) use ($numeric) {
 			return $numeric ? strnatcmp($a, $b) : strcoll($a, $b);
 		});
 
@@ -31,7 +32,7 @@ class Sorting
 	 */
 	public static function ksort(array $arr, bool $numeric = false): array
 	{
-		uksort($arr, function($a, $b) use ($numeric) {
+		uksort($arr, function ($a, $b) use ($numeric) {
 			return $numeric ? strnatcmp($a, $b) : strcoll($a, $b);
 		});
 

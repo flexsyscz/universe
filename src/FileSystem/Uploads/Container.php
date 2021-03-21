@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Flexsyscz\Universe\FileSystem\Uploads;
 
@@ -36,27 +37,18 @@ final class Container implements FileDescriptor
 	}
 
 
-	/**
-	 * @return bool
-	 */
 	public function isOk(): bool
 	{
 		return $this->fileUpload->isOk();
 	}
 
 
-	/**
-	 * @return int
-	 */
 	public function getError(): int
 	{
 		return $this->fileUpload->getError();
 	}
 
 
-	/**
-	 * @return FileUpload
-	 */
 	public function getFileUpload(): FileUpload
 	{
 		return $this->fileUpload;
@@ -72,7 +64,7 @@ final class Container implements FileDescriptor
 	 */
 	public function getOptimizedImage($width = null, $height = null, int $flags = Image::FIT): ?Image
 	{
-		if($this->isOk()) {
+		if ($this->isOk()) {
 			if ($this->isImage()) {
 				$exif = @exif_read_data($this->fileUpload->getTemporaryFile());
 				$image = $this->fileUpload->toImage();

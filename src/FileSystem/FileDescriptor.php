@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Flexsyscz\Universe\FileSystem;
 
@@ -9,8 +10,5 @@ namespace Flexsyscz\Universe\FileSystem;
  */
 interface FileDescriptor
 {
-	/**
-	 * @return bool
-	 */
 	function isImage(): bool;
 }

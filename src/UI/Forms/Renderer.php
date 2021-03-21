@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Flexsyscz\UI\Forms;
 
@@ -12,13 +13,10 @@ use Nette\Forms\Form;
  */
 class Renderer
 {
-	/**
-	 * @param Form $form
-	 */
 	public static function makeBootstrap5(Form $form): void
 	{
 		$renderer = $form->getRenderer();
-		if(isset($renderer->wrappers)) {
+		if (isset($renderer->wrappers)) {
 			$renderer->wrappers['controls']['container'] = null;
 			$renderer->wrappers['pair']['container'] = 'div class="row mb-3"';
 			$renderer->wrappers['pair']['.error'] = 'has-danger';
