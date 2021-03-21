@@ -62,10 +62,10 @@ final class Translator implements Localization\Translator
 	/** @var ILogger */
 	private $logger;
 
-	/** @var array|null */
+	/** @var array<array>|null */
 	private $debugStack = null;
 
-	/** @var array */
+	/** @var array<array|string> */
 	private $sniffer;
 
 	/** @var int */
@@ -77,7 +77,7 @@ final class Translator implements Localization\Translator
 
 	/**
 	 * Translator constructor.
-	 * @param array $parameters
+	 * @param array<array|string|bool> $parameters
 	 * @param ILogger $logger
 	 */
 	public function __construct(array $parameters, ILogger $logger)
@@ -89,9 +89,9 @@ final class Translator implements Localization\Translator
 		$this->debugMode = isset($parameters['debugMode']) && is_bool($parameters['debugMode']) ? $parameters['debugMode'] : false;
 		$this->logging = isset($parameters['logging']) && is_bool($parameters['logging']) ? $parameters['logging'] : false;
 		$this->appDir = isset($parameters['appDir']) && is_string($parameters['appDir']) ? FileSystem::normalizePath($parameters['appDir'] . '/../') : false;
-		$this->namespace = isset($parameters['namespace']) ? $parameters['namespace'] : self::DEFAULT_NAMESPACE;
-		$this->language = $parameters['default'];
-		$this->fallback = isset($parameters['fallback']) ? $parameters['fallback'] : $this->language;
+		$this->namespace = isset($parameters['namespace']) && is_string($parameters['namespace']) ? $parameters['namespace'] : self::DEFAULT_NAMESPACE;
+		$this->language = strval($parameters['default']);
+		$this->fallback = isset($parameters['fallback']) && is_string($parameters['fallback']) ? $parameters['fallback'] : $this->language;
 		$this->logger = $logger;
 
 		if($this->debugMode) {
@@ -146,7 +146,7 @@ final class Translator implements Localization\Translator
 
 				$this->dictionaries[$language][$namespace] = $dictionary;
 
-				if($this->debugMode) {
+				if($this->debugMode && is_array($this->debugStack)) {
 					if(!isset($this->debugStack['dictionaries'][$language])) {
 						$this->debugStack['dictionaries'][$language] = [];
 					}
@@ -173,13 +173,18 @@ final class Translator implements Localization\Translator
 	{
 		if(is_dir($path)) {
 			$codes = array_keys($this->dictionaries);
-			foreach(scandir($path) as $item) {
-				$language = strval(preg_replace('#\.neon$#', '', $item));
-				if(in_array($language, $codes, true)) {
-					$filePath = $path . DIRECTORY_SEPARATOR . $item;
-					$this->info(sprintf('Component\'s dictionary accepted to install: [%s]:%s from path %s', $language, $namespace, $filePath));
-					$this->install($language, $filePath, $namespace);
+			$items = scandir($path);
+			if(is_array($items)) {
+				foreach ($items as $item) {
+					$language = strval(preg_replace('#\.neon$#', '', $item));
+					if (in_array($language, $codes, true)) {
+						$filePath = $path . DIRECTORY_SEPARATOR . $item;
+						$this->info(sprintf('Component\'s dictionary accepted to install: [%s]:%s from path %s', $language, $namespace, $filePath));
+						$this->install($language, $filePath, $namespace);
+					}
 				}
+			} else {
+				$this->error(sprintf('Unable to read items of directory: %s', $path));
 			}
 
 		} else {
@@ -277,7 +282,9 @@ final class Translator implements Localization\Translator
 			$translation = $this->lookup($entryNode, $path, $count);
 			if($this->debugMode) {
 				$this->sniffer['translation'] = $translation;
-				$this->debugStack[] = $this->sniffer;
+				if(is_array($this->debugStack)) {
+					$this->debugStack[] = $this->sniffer;
+				}
 			}
 
 			return $translation;
@@ -322,18 +329,18 @@ final class Translator implements Localization\Translator
 
 
 	/**
-	 * @param array $node
-	 * @param array $path
+	 * @param array<array|string> $node
+	 * @param array<array|string> $path
 	 * @param null $count
-	 * @param array|null $tail
+	 * @param array<array|string>|null $tail
 	 * @return string
 	 */
 	private function lookup(array $node, array $path, $count = null, array $tail = null): string
 	{
 		if(empty($path)) {
-			if(isset($node[$count])) {
+			if(isset($node[$count]) && is_string($node[$count])) {
 				return $node[$count];
-			} else if(isset($node[self::PLACEHOLDER])) {
+			} else if(isset($node[self::PLACEHOLDER]) && is_string($node[self::PLACEHOLDER])) {
 				return sprintf($node[self::PLACEHOLDER], $count);
 			}
 
@@ -341,8 +348,8 @@ final class Translator implements Localization\Translator
 		}
 
 		$index = array_shift($path);
-		if(isset($node[$index])) {
-			if($this->debugMode) {
+		if(is_string($index) && isset($node[$index])) {
+			if($this->debugMode && is_array($this->sniffer['lookup'])) {
 				$this->sniffer['lookup'][] = $index;
 			}
 
@@ -360,7 +367,7 @@ final class Translator implements Localization\Translator
 					}
 
 					$tail = count($path) > 0 ? $path : null;
-					$path = preg_replace('#^' . self::FOLLOW_SYMBOL . '#', '', $node[$index]);
+					$path = strval(preg_replace('#^' . self::FOLLOW_SYMBOL . '#', '', $node[$index]));
 					$path = explode(self::DELIMITER, $path);
 					return $this->lookup($this->dictionaries[$this->language][$this->namespace], $path, $count, $tail);
 				}
@@ -375,7 +382,7 @@ final class Translator implements Localization\Translator
 	/**
 	 * @param string $message
 	 */
-	private function info(string $message)
+	private function info(string $message): void
 	{
 		if($this->logging) {
 			$this->logger->log($message, ILogger::INFO);
@@ -386,7 +393,7 @@ final class Translator implements Localization\Translator
 	/**
 	 * @param string $message
 	 */
-	private function error(string $message)
+	private function error(string $message): void
 	{
 		if($this->logging) {
 			$this->logger->log($message, ILogger::ERROR);
@@ -395,20 +402,20 @@ final class Translator implements Localization\Translator
 
 
 	/**
-	 * @return array
+	 * @return array<array>
 	 */
 	public function getDebugStack(): array
 	{
-		return $this->debugStack;
+		return is_array($this->debugStack) ? $this->debugStack : [];
 	}
 
 
 	/**
-	 * @param $filePath
+	 * @param string $filePath
 	 * @return string
 	 */
-	private function normalizeFilePath($filePath): string
+	private function normalizeFilePath(string $filePath): string
 	{
-		return $this->appDir ? preg_replace('#^' . $this->appDir . '#', '', $filePath) : $filePath;
+		return $this->appDir ? strval(preg_replace('#^' . $this->appDir . '#', '', $filePath)) : $filePath;
 	}
 }

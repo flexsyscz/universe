@@ -47,7 +47,7 @@ class CsvStreamReader implements StreamReader
 	 */
 	public function read(int $length = 0, string $delimiter = self::DELIMITER, string $enclosure = "'", string $escapeChar = "\\")
 	{
-		if(($result = fgetcsv($this->file, $length, $delimiter, $enclosure, $escapeChar)) === null) {
+		if(($result = fgetcsv($this->file, $length, $delimiter, $enclosure, $escapeChar)) === null) { // @phpstan-ignore-line
 			throw new InvalidStateException('Unable to read the data from the CSV stream.');
 		}
 

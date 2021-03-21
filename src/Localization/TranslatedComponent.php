@@ -2,6 +2,8 @@
 
 namespace Flexsyscz\Universe\Localization;
 
+use Flexsyscz\Universe\Exceptions\InvalidStateException;
+
 
 /**
  * Trait TranslatedComponent
@@ -19,10 +21,13 @@ trait TranslatedComponent
 	/**
 	 * @param TranslatorNamespaceFactory $factory
 	 */
-	public function injectTranslator(TranslatorNamespaceFactory $factory)
+	public function injectTranslator(TranslatorNamespaceFactory $factory): void
 	{
 		$this->reflection = new \ReflectionClass($this);
-		$dir = dirname($this->reflection->getFileName()) . '/translations';
+		$dir = dirname(strval($this->reflection->getFileName())) . '/translations';
+		if(!file_exists($dir) || !is_dir($dir)) {
+			throw new InvalidStateException(sprintf('Directory of translations not found in path %s', $dir));
+		}
 
 		$namespace = self::ns();
 		$translatorNamespace = $factory->create($namespace);
