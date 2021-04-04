@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Flexsyscz\Universe\FileSystem;
 
 use Nette\Http\FileUpload;
-use Nette\SmartObject;
 
 
 /**
@@ -13,8 +12,6 @@ use Nette\SmartObject;
  */
 trait FileObject
 {
-	use SmartObject;
-
 	/** @var bool */
 	private $isImage;
 
