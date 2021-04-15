@@ -17,14 +17,15 @@ class Renderer
 	{
 		$renderer = $form->getRenderer();
 		if (isset($renderer->wrappers)) {
-			$renderer->wrappers['controls']['container'] = null;
+			$renderer->wrappers['controls']['container'] = 'div class="container form-controls"';
 			$renderer->wrappers['pair']['container'] = 'div class="row mb-3"';
 			$renderer->wrappers['pair']['.error'] = 'has-danger';
-			$renderer->wrappers['control']['container'] = 'div class=col-sm-9';
+			$renderer->wrappers['control']['container'] = 'div class="col-sm-9"';
 			$renderer->wrappers['label']['container'] = 'div class="col-sm-3 col-form-label"';
-			$renderer->wrappers['control']['description'] = 'span class=form-text';
-			$renderer->wrappers['control']['errorcontainer'] = 'span class=form-control-feedback';
+			$renderer->wrappers['control']['description'] = 'span class="form-text"';
+			$renderer->wrappers['control']['errorcontainer'] = 'span class="form-control-feedback"';
 			$renderer->wrappers['control']['.error'] = 'is-invalid';
+			$renderer->wrappers['hidden']['container'] = 'div class="container form-hidden-controls"';
 		}
 
 		foreach ($form->getControls() as $control) {
@@ -46,7 +47,7 @@ class Renderer
 					$control->getItemLabelPrototype()->addClass('form-check-label');
 				}
 				$control->getControlPrototype()->setAttribute('class', 'form-check-input');
-				$control->getSeparatorPrototype()->setName('div')->setAttribute('class', 'form-check');
+				$control->getContainerPrototype()->setName('div')->setAttribute('class', 'form-check');
 			}
 		}
 	}
