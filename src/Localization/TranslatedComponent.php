@@ -42,4 +42,14 @@ trait TranslatedComponent
 			: $this->reflection->getName();
 		return $name ? sprintf('!%s.%s', $ns, $name) : $ns;
 	}
+
+
+	public function translate(string $message, bool $useNs = false): string
+	{
+		if ($useNs) {
+			$message = $this->ns($message);
+		}
+
+		return $this->translatorNamespace->translate($message);
+	}
 }
