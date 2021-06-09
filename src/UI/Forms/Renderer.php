@@ -34,8 +34,11 @@ class Renderer
 				$control->getControlPrototype()->addClass(empty($usedPrimary) ? 'btn btn-primary' : 'btn btn-secondary');
 				$usedPrimary = true;
 
-			} elseif (in_array($type, ['text', 'textarea', 'select'], true)) {
+			} elseif (in_array($type, ['text', 'textarea'], true)) {
 				$control->getControlPrototype()->addClass('form-control');
+
+			} elseif (in_array($type, ['select'], true)) {
+				$control->getControlPrototype()->addClass('form-select');
 
 			} elseif ($type === 'file') {
 				$control->getControlPrototype()->addClass('form-control-file');
