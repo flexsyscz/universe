@@ -22,7 +22,7 @@ class CsvStreamWriter implements StreamWriter
 	 * @param string $filePath
 	 * @return $this
 	 */
-	public function open(string $filePath): self
+	public function open(string $filePath): StreamWriter
 	{
 		$file = fopen($filePath, 'w');
 		if (!$file) {
@@ -50,7 +50,7 @@ class CsvStreamWriter implements StreamWriter
 		string $delimiter = self::DELIMITER,
 		string $enclosure = "'",
 		string $escapeChar = '\\'
-	): self {
+	): StreamWriter {
 		if (!is_array($data) || fputcsv($this->file, $data, $delimiter, $enclosure, $escapeChar) === false) {
 			throw new InvalidStateException('Unable to write the data into the CSV stream.');
 		}
@@ -62,7 +62,7 @@ class CsvStreamWriter implements StreamWriter
 	/**
 	 * @return $this
 	 */
-	public function close(): self
+	public function close(): StreamWriter
 	{
 		if (!flock($this->file, LOCK_UN)) {
 			throw new InvalidStateException('Unable to release the file\'s lock.');

@@ -14,16 +14,16 @@ interface StreamWriter
 	 * @param string $filePath
 	 * @return StreamWriter
 	 */
-	public function open(string $filePath);
+	public function open(string $filePath): self;
 
 	/**
 	 * @param array<string>|string $data
 	 * @return StreamWriter
 	 */
-	public function write($data);
+	public function write($data): self;
 
 	/**
 	 * @return StreamWriter
 	 */
-	public function close();
+	public function close(): self;
 }

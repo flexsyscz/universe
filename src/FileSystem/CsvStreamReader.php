@@ -22,7 +22,7 @@ class CsvStreamReader implements StreamReader
 	 * @param string $filePath
 	 * @return $this
 	 */
-	public function open(string $filePath): self
+	public function open(string $filePath): StreamReader
 	{
 		$file = fopen($filePath, 'r');
 		if (!$file) {
@@ -62,7 +62,7 @@ class CsvStreamReader implements StreamReader
 	/**
 	 * @return $this
 	 */
-	public function close(): self
+	public function close(): StreamReader
 	{
 		if (!flock($this->file, LOCK_UN)) {
 			throw new InvalidStateException('Unable to release the file\'s lock.');

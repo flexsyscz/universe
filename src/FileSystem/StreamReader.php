@@ -14,7 +14,7 @@ interface StreamReader
 	 * @param string $filePath
 	 * @return StreamReader
 	 */
-	public function open(string $filePath);
+	public function open(string $filePath): self;
 
 	/**
 	 * @return mixed
@@ -24,5 +24,5 @@ interface StreamReader
 	/**
 	 * @return StreamReader
 	 */
-	public function close();
+	public function close(): self;
 }
