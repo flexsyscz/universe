@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Flexsyscz\Universe\FileSystem;
 
 use Flexsyscz\Universe\Exceptions\InvalidStateException;
+use Nette\Utils\ArrayHash;
 
 
 /**
@@ -69,5 +70,21 @@ class CsvStreamReader implements StreamReader
 		}
 
 		return $this;
+	}
+
+
+	/**
+	 * @param array $data
+	 * @param array $mapper
+	 * @return ArrayHash
+	 */
+	public function map(array $data, array $mapper): ArrayHash
+	{
+		$row = new ArrayHash();
+		foreach ($mapper as $key => $name) {
+			$row->offsetSet($name, $data[$key] ?? null);
+		}
+
+		return $row;
 	}
 }
