@@ -27,8 +27,8 @@ trait FileObject
 
 	public function isImage(): bool
 	{
-		if (!$this->isImage) {
-			$this->isImage = in_array($this->type, FileUpload::IMAGE_MIME_TYPES, true);
+		if(!isset($this->isImage)) {
+			$this->isImage = in_array($this->getType(), FileUpload::IMAGE_MIME_TYPES, true);
 		}
 
 		return $this->isImage;

@@ -74,13 +74,13 @@ class CsvStreamReader implements StreamReader
 
 
 	/**
-	 * @param array $data
-	 * @param array $mapper
-	 * @return ArrayHash
+	 * @param array<mixed> $data
+	 * @param array<string|int> $mapper
+	 * @return ArrayHash<mixed>
 	 */
 	public function map(array $data, array $mapper): ArrayHash
 	{
-		$row = new ArrayHash();
+		$row = new ArrayHash;
 		foreach ($mapper as $key => $name) {
 			$row->offsetSet($name, $data[$key] ?? null);
 		}
