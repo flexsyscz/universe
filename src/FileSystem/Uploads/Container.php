@@ -8,6 +8,7 @@ use Flexsyscz\Universe\FileSystem\FileObject;
 use Nette\Http\FileUpload;
 use Nette\Utils\Image;
 use Nette\Utils\ImageException;
+use Nette\Utils\Random;
 
 
 /**
@@ -91,5 +92,11 @@ final class Container implements FileDescriptor
 		}
 
 		return null;
+	}
+
+
+	public function getRandomizedName(int $length = 10, string $charlist = '[0-9a-z]', string $mask = '%s_%s'): string
+	{
+		return sprintf($mask, Random::generate($length, $charlist), $this->name);
 	}
 }
