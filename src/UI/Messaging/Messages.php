@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Flexsyscz\UI\Messaging;
 
 use Flexsyscz\Universe\Exceptions\InvalidArgumentException;
+use Nette\Application\UI\Control;
+use Nette\Application\UI\Presenter;
 
 
 /**
@@ -27,8 +29,15 @@ trait Messages
 			throw new InvalidArgumentException(sprintf('Argument $type is not valid constant of %s class.', MessageType::class));
 		}
 
-		if ($this->isAjax()) {
-			$this->redrawControl('flashes');
+		$presenter = null;
+		if($this instanceof Presenter) {
+			$presenter = $this;
+		} else if($this instanceof Control) {
+			$presenter = $this->getPresenter();
+		}
+
+		if ($presenter->isAjax()) {
+			$presenter->redrawControl('flashes');
 		}
 
 		return parent::flashMessage($message, $type);
