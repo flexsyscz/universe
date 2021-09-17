@@ -60,6 +60,8 @@ class EnumWrapper extends ImmutableValuePropertyWrapper
 	public function convertFromRawValue($value)
 	{
 		$enumClass = $this->enumClass;
-		return $value === null ? null : forward_static_call(Callback::check([$enumClass, 'byValue']), $value);
+		return $value === null
+			? null
+			: forward_static_call(Callback::check([$enumClass, 'byValue']), $value);
 	}
 }

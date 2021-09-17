@@ -30,9 +30,9 @@ trait Messages
 		}
 
 		$presenter = null;
-		if($this instanceof Presenter) {
+		if ($this instanceof Presenter) {
 			$presenter = $this;
-		} else if($this instanceof Control) {
+		} elseif ($this instanceof Control) {
 			$presenter = $this->getPresenter();
 		}
 
