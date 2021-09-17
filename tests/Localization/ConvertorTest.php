@@ -29,4 +29,10 @@ test('', function () {
 	Assert::equal($converted[1], $expected);
 	Assert::equal($converted[4], $expected);
 	Assert::equal(Universe\Localization\Convertor::convert($accents), $expected);
+
+	$convertedIn = Universe\Localization\Convertor::convertIn($converted);
+	$accentsIn = iconv('windows-1250', 'utf-8', $expected);
+	Assert::equal($convertedIn[1], $accentsIn);
+	Assert::equal($convertedIn[4], $accentsIn);
+	Assert::equal(Universe\Localization\Convertor::convertIn($expected), $accentsIn);
 });
