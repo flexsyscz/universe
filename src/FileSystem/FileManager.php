@@ -45,7 +45,7 @@ class FileManager
 			throw new DuplicatePartitionException(sprintf('Partition %s is already exist.', $name));
 		}
 
-		$this->partitions->offsetSet($name, $path);
+		$this->partitions->offsetSet($name, FileSystem::normalizePath($path));
 
 		return $this;
 	}
