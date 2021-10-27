@@ -28,7 +28,7 @@ class FileManager
 	 * FileManager constructor.
 	 * @param array<string> $partitions
 	 */
-	public function __construct(array $partitions)
+	public function __construct(array $partitions = [])
 	{
 		$this->partitions = ArrayHash::from($partitions, false);
 	}
