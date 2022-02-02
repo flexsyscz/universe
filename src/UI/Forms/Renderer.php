@@ -13,6 +13,31 @@ use Nette\Forms\Form;
  */
 class Renderer
 {
+	/** @var string */
+	public const OPTION_BTN_CLASS = 'btnClass';
+
+	/** @var string */
+	public const OPTION_FORM_SWITCH = 'formSwitch';
+
+	/** @var string */
+	private static $primarySubmitBtnClass = 'btn btn-primary';
+
+	/** @var string */
+	private static $secondarySubmitBtnClass = 'btn btn-secondary';
+
+
+	public static function setPrimarySubmitBtnClass(string $primarySubmitBtnClass): void
+	{
+		self::$primarySubmitBtnClass = $primarySubmitBtnClass;
+	}
+
+
+	public static function setSecondarySubmitBtnClass(string $secondarySubmitBtnClass): void
+	{
+		self::$secondarySubmitBtnClass = $secondarySubmitBtnClass;
+	}
+
+
 	public static function makeBootstrap5(Form $form): void
 	{
 		$renderer = $form->getRenderer();
@@ -24,6 +49,7 @@ class Renderer
 			$renderer->wrappers['label']['container'] = 'div class="col-sm-3 col-form-label"';
 			$renderer->wrappers['control']['description'] = 'span class="form-text"';
 			$renderer->wrappers['control']['errorcontainer'] = 'span class="form-control-feedback"';
+			$renderer->wrappers['control']['erroritem'] = 'span class="invalid-feedback"';
 			$renderer->wrappers['control']['.error'] = 'is-invalid';
 			$renderer->wrappers['hidden']['container'] = 'div class="container form-hidden-controls"';
 		}
@@ -31,17 +57,18 @@ class Renderer
 		foreach ($form->getControls() as $control) {
 			$type = $control->getOption('type');
 			if ($type === 'button') {
-				$control->getControlPrototype()->addClass(empty($usedPrimary) ? 'btn btn-primary' : 'btn btn-secondary');
+				$btnClass = $control->getOption(self::OPTION_BTN_CLASS);
+				$control->getControlPrototype()->addClass(empty($usedPrimary) ? self::$primarySubmitBtnClass : $btnClass ?? self::$secondarySubmitBtnClass);
 				$usedPrimary = true;
 
 			} elseif (in_array($type, ['text', 'textarea'], true)) {
 				$control->getControlPrototype()->addClass('form-control');
 
-			} elseif (in_array($type, ['select'], true)) {
+			} elseif ($type === 'select') {
 				$control->getControlPrototype()->addClass('form-select');
 
 			} elseif ($type === 'file') {
-				$control->getControlPrototype()->addClass('form-control-file');
+				$control->getControlPrototype()->addClass('form-control form-control-file');
 
 			} elseif (in_array($type, ['checkbox', 'radio'], true)) {
 				if ($control instanceof Nette\Forms\Controls\Checkbox) {
@@ -50,7 +77,12 @@ class Renderer
 					$control->getItemLabelPrototype()->addClass('form-check-label');
 				}
 				$control->getControlPrototype()->setAttribute('class', 'form-check-input');
-				$control->getContainerPrototype()->setName('div')->setAttribute('class', 'form-check');
+				if($control->getOption(self::OPTION_FORM_SWITCH)) {
+					$control->getContainerPrototype()->setName('div')->setAttribute('class', 'form-check form-switch');
+
+				} else {
+					$control->getContainerPrototype()->setName('div')->setAttribute('class', 'form-check');
+				}
 			}
 		}
 	}
