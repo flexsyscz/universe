@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Flexsyscz\UI\Forms;
@@ -13,10 +14,8 @@ use Nette\Forms\Form;
  */
 class Renderer
 {
-	/** @var string */
 	public const OPTION_BTN_CLASS = 'btnClass';
 
-	/** @var string */
 	public const OPTION_FORM_SWITCH = 'formSwitch';
 
 	/** @var string */
@@ -77,7 +76,7 @@ class Renderer
 					$control->getItemLabelPrototype()->addClass('form-check-label');
 				}
 				$control->getControlPrototype()->setAttribute('class', 'form-check-input');
-				if($control->getOption(self::OPTION_FORM_SWITCH)) {
+				if ($control->getOption(self::OPTION_FORM_SWITCH)) {
 					$control->getContainerPrototype()->setName('div')->setAttribute('class', 'form-check form-switch');
 
 				} else {
