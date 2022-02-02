@@ -95,7 +95,7 @@ final class Container implements FileDescriptor
 	}
 
 
-	public function getRandomizedName(int $length = 10, string $charlist = '[0-9a-z]', string $mask = '%s_%s'): string
+	public function getRandomizedName(int $length = 10, string $charlist = '0-9a-z', string $mask = '%s_%s'): string
 	{
 		return sprintf($mask, Random::generate($length, $charlist), $this->name);
 	}
