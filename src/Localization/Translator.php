@@ -245,10 +245,10 @@ final class Translator implements Localization\Translator
 			return $message;
 		}
 
-		$path = explode(self::DELIMITER, $message);
+		$path = is_string($message) ? explode(self::DELIMITER, $message) : null;
 		if (!is_array($path)) {
 			$this->error(sprintf('Invalid message for translation: %s', $message));
-			return $message;
+			return is_string($message) ? $message : '';
 		}
 
 		try {
